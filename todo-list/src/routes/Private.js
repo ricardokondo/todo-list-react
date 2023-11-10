@@ -5,7 +5,7 @@ import { onAuthStateChanged } from "firebase/auth";
 
 import { Navigate } from "react-router-dom";
 
-// Componente Private que verifica se o usuário está logado para acessar a rota /admin da aplicação.
+// Componente Private que verifica se o usuário está logado para acessar a rota /admin da aplicação
 export default function Private({ children }) {
   const [loading, setLoading] = useState(true);
   const [signed, setSigned] = useState(false);
