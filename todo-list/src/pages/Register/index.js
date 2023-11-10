@@ -5,23 +5,30 @@ import { auth } from "../../firebaseConnection";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
 
+// Componente Register que é utilizado para cadastrar um novo usuário no sistema
 export default function Register() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
 
+  // Função que é executada quando o formulário é submetido para cadastrar um novo usuário no sistema
   async function handleRegister(e) {
     e.preventDefault();
 
+    // verifica se os campos email e password foram preenchidos
     if (email !== "" && password !== "") {
+      // cria um novo usuário no sistema
       await createUserWithEmailAndPassword(auth, email, password)
         .then(() => {
+          // se o usuário foi criado com sucesso, redireciona para a rota /admin da aplicação
           navigate("/admin", { replace: true });
         })
         .catch(() => {
+          // se ocorreu algum erro ao criar o usuário, exibe uma mensagem de erro
           console.log("ERRO AO FAZER O CADASTRO");
         });
     } else {
+      // Caso os campos email e password não tenham sido preenchidos, exibe uma mensagem de erro
       alert("Preencha todos os campos!");
     }
   }

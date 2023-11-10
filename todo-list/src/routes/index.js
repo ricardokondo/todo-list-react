@@ -5,6 +5,8 @@ import Register from "../pages/Register";
 import Admin from "../pages/Admin";
 import Private from "./Private";
 
+// Definição do componente RoutesApp que contém as rotas da aplicação
+// O componente RoutesApp é utilizado pelo componente App para definir as rotas da aplicação
 function RoutesApp() {
   return (
     <Routes>

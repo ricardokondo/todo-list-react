@@ -16,6 +16,7 @@ import {
   updateDoc,
 } from "firebase/firestore";
 
+// Componente Admin que é utilizado para gerenciar as tarefas do usuário logado no sistema
 export default function Admin() {
   const [tarefaInput, setTarefaInput] = useState("");
   const [user, setUser] = useState({});
@@ -23,21 +24,31 @@ export default function Admin() {
 
   const [tarefas, setTarefas] = useState([]);
 
+  // Carrega as tarefas do usuário logado no sistema ao acessar a rota /admin da aplicação e ao atualizar a página
   useEffect(() => {
+    // Função que carrega as tarefas do usuário logado no sistema
     async function loadTarefas() {
+      // localStorage.getItem é utilizado para recuperar o objeto userData do localStorage do navegador do usuário
+      // JSON.parse é utilizado para converter a string JSON em um objeto JavaScript novamente e armazenar na variável data o objeto userData
       const userDetail = localStorage.getItem("@detailUser");
+      // setUser é utilizado para armazenar o objeto userData na variável user
       setUser(JSON.parse(userDetail));
 
+      // Verifica se o usuário está logado utilizando o objeto user retornado pelo localStorage.getItem
       if (userDetail) {
         const data = JSON.parse(userDetail);
-
+        // collection é utilizado para acessar a coleção tarefas do banco de dados Firestore do Firebase
         const tarefaRef = collection(db, "tarefas");
+        // query é utilizado para realizar uma consulta na coleção tarefas do banco de dados Firestore do Firebase
+        // para recuperar as tarefas do usuário logado no sistema
         const q = query(
           tarefaRef,
           orderBy("created", "desc"),
           where("userUid", "==", data?.uid)
         );
 
+        // onSnapshot é utilizado para recuperar os dados da consulta realizada na coleção tarefas do banco de dados Firestore do Firebase
+        // e atualizar a variável tarefas com os dados retornados da consulta
         const unsub = onSnapshot(q, (snapshot) => {
           let lista = [];
 
@@ -57,19 +68,21 @@ export default function Admin() {
     loadTarefas();
   }, []);
 
+  // Registra uma nova tarefa no banco de dados Firestore do Firebase ou atualiza uma tarefa existente
   async function handleRegister(e) {
     e.preventDefault();
 
+    // Verifica se o campo tarefa foi preenchido para registrar uma nova tarefa
     if (tarefaInput === "") {
       alert("Digite sua tarefa...");
       return;
     }
-
+    // Verifica se o campo tarefa foi preenchido para atualizar uma tarefa existente
     if (edit?.id) {
       handleUpdateTarefa();
       return;
     }
-
+    // addDoc é utilizado para registrar uma nova tarefa no banco de dados Firestore do Firebase
     await addDoc(collection(db, "tarefas"), {
       tarefa: tarefaInput,
       created: new Date(),
@@ -89,20 +102,23 @@ export default function Admin() {
     await signOut(auth);
   }
 
-  // Deleta a tarefa selecionada
+  // Deleta a tarefa selecionada pelo usuário
   async function deleteTarefa(id) {
     const docRef = doc(db, "tarefas", id);
     await deleteDoc(docRef);
   }
 
-  // Editar informações de uma tarefa
+  // Editar informações de uma tarefa existente no banco de dados Firestore do Firebase
   function editTarefa(item) {
     setTarefaInput(item.tarefa);
     setEdit(item);
   }
 
+  // Função que atualiza as informações de uma tarefa
   async function handleUpdateTarefa() {
+    // edit?.id é utilizado para verificar se a variável edit possui o atributo id
     const docRef = doc(db, "tarefas", edit?.id);
+    // updateDoc é utilizado para atualizar as informações de uma tarefa existente no banco de dados Firestore do Firebase
     await updateDoc(docRef, {
       tarefa: tarefaInput,
     })
