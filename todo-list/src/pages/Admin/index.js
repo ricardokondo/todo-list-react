@@ -17,6 +17,7 @@ import {
 } from "firebase/firestore";
 
 // Componente Admin que é utilizado para gerenciar as tarefas do usuário logado no sistema
+// Nova rota
 export default function Admin() {
   const [tarefaInput, setTarefaInput] = useState("");
   const [user, setUser] = useState({});
